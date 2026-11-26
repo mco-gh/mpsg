@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Medical Physics Study Guide</title>
+  <meta name="description" content="A free study guide for medical physics board and qualifying exams: spaced-repetition flashcards, practice questions, a mock exam, formula sheets and a nuclide table. Works offline; your progress stays on your device.">
+  <meta name="color-scheme" content="light">
+  <script>
+    try { document.querySelector('meta[name="color-scheme"]').content = JSON.parse(localStorage.getItem('mpsg:scheme')) ?? 'light'; } catch {}
+  </script>
+  <meta name="theme-color" content="#f4f5fb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0f1d" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="MPSG">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <a class="brand" href="#today">
+        <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="7" y="2.5" width="21" height="25" rx="5.5" class="logo-back"/>
+          <rect x="3.5" y="5" width="21" height="25" rx="5.5" class="logo-front"/>
+          <path d="M7 26h14" stroke="#fff" stroke-opacity="0.45" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M6.8 22.6C9.8 22.2 11.6 21.4 12.6 20.1c1-1.2 1-5.6 2-6 .9-.4 1.9 7 3.2 11" fill="none" stroke="#7cf3ff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="14.6" cy="14.1" r="1.5" fill="#fff"/>
+        </svg>
+        <span class="brand-name">Medical Physics <span>Study Guide</span></span>
+      </a>
+      <p class="credit">Made with ❤️ by <a href="https://mco.dev/">Marc</a><a class="apps-link" href="https://mco.dev/apps/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>All apps</a></p>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" type="button" command="show-modal" commandfor="about" aria-label="About" title="About">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.75" r="0.6" fill="currentColor"/></svg>
+      </button>
+      <button class="icon-btn" type="button" command="show-modal" commandfor="settings" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4.5v5M6 14.5v5" /><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="Study guide">
+    <a href="#today" data-tab="today">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg>
+      <span>Today</span>
+    </a>
+    <a href="#cards" data-tab="cards">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="13" height="16" rx="3"/><path d="M4 8v10a3 3 0 0 0 3 3h8"/></svg>
+      <span>Cards</span>
+    </a>
+    <a href="#practice" data-tab="practice">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg>
+      <span>Practice</span>
+    </a>
+    <a href="#guide" data-tab="guide">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.5v14C9.5 18 6.5 18 4 19.5zM20 5.5C17.5 4 14.5 4 12 5.5v14c2.5-1.5 5.5-1.5 8 0z"/></svg>
+      <span>Guide</span>
+    </a>
+    <a href="#progress" data-tab="progress">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-6M12 20V4M19 20v-9"/></svg>
+      <span>Progress</span>
+    </a>
+  </nav>
+
+  <main id="main">
+
+    <!-- Today -->
+    <section class="view" id="view-today" aria-labelledby="greeting" hidden>
+      <div class="hero">
+        <div class="hero-text">
+          <p class="eyebrow" id="today-date"></p>
+          <h1 id="greeting">Welcome</h1>
+          <p class="hero-sub" id="hero-sub">Flashcards, practice questions and formula sheets for your medical physics boards, a few minutes a day.</p>
+        </div>
+        <div class="countdown" id="countdown">
+          <button class="countdown-set" type="button" id="set-exam">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg>
+            <span>Set your exam date</span>
+            <small>for a countdown and a daily plan</small>
+          </button>
+          <div class="countdown-show" id="countdown-show" hidden>
+            <b id="countdown-days">0</b>
+            <span id="countdown-label">days to your exam</span>
+            <small id="countdown-date"></small>
+          </div>
+        </div>
+      </div>
+
+      <div class="today-grid">
+        <article class="panel cta cta-cards">
+          <div class="ring" id="today-ring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="52"/><circle class="ring-fill" id="today-ring-fill" cx="60" cy="60" r="52"/></svg><span id="today-ring-text">0</span></div>
+          <div class="cta-body">
+            <h2>Today’s flashcards</h2>
+            <p id="today-cards-sub">Loading…</p>
+            <a class="primary-btn" id="today-cards-btn" href="#cards">Start studying</a>
+          </div>
+        </article>
+        <article class="panel cta cta-quiz">
+          <div class="cta-icon" aria-hidden="true">🎯</div>
+          <div class="cta-body">
+            <h2>Practice questions</h2>
+            <p id="today-quiz-sub">Exam-style questions with worked explanations.</p>
+            <div class="btn-row">
+              <button class="primary-btn alt" type="button" data-start="quick">Quick 10</button>
+              <a class="soft-btn" href="#practice">More modes</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <dl class="tiles">
+        <div class="tile tile-streak"><dt>Day streak</dt><dd><span id="t-streak">0</span><span class="flame" aria-hidden="true">🔥</span></dd></div>
+        <div class="tile"><dt>Cards learned</dt><dd id="t-learned">0</dd></div>
+        <div class="tile"><dt>Question accuracy</dt><dd id="t-accuracy">–</dd></div>
+      </dl>
+
+      <section class="tip panel" aria-labelledby="h-tip">
+        <h2 id="h-tip"><span aria-hidden="true">💡</span> High-yield fact of the day</h2>
+        <p id="tip-text"></p>
+        <p class="tip-topic" id="tip-topic"></p>
+      </section>
+
+      <section aria-labelledby="h-topics" class="topics-section">
+        <div class="section-head">
+          <h2 id="h-topics">Topics</h2>
+          <a class="ghost-btn" href="#guide">Study notes</a>
+        </div>
+        <ul class="topic-grid" id="topic-grid"></ul>
+      </section>
+    </section>
+
+    <!-- Cards -->
+    <section class="view" id="view-cards" aria-labelledby="h-cards" hidden>
+      <h1 class="visually-hidden" id="h-cards">Flashcards</h1>
+      <div class="focus-bar" id="focus-bar" role="radiogroup" aria-label="Which topics"></div>
+
+      <div class="session" id="session">
+        <div class="session-head">
+          <ul class="chips">
+            <li class="chip chip-new"><b id="count-new">0</b> New</li>
+            <li class="chip chip-learning"><b id="count-learning">0</b> Learning</li>
+            <li class="chip chip-review"><b id="count-review">0</b> Review</li>
+          </ul>
+          <button class="ghost-btn" type="button" id="undo" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+            Undo
+          </button>
+        </div>
+        <progress class="bar" id="session-bar" value="0" max="1" aria-label="Today’s session progress"></progress>
+
+        <div class="stage" id="stage">
+          <div class="card" id="card">
+            <div class="card-inner">
+              <div class="face front" id="face-front">
+                <div class="face-top">
+                  <span class="topic-tag" id="front-topic"></span>
+                  <span class="badge" id="badge-new" hidden>New</span>
+                </div>
+                <p class="question" id="question"></p>
+                <p class="hint">Recall the answer, then tap to check</p>
+              </div>
+              <div class="face back" id="face-back" inert>
+                <div class="face-top">
+                  <span class="topic-tag" id="back-topic"></span>
+                </div>
+                <p class="question small" id="question-back"></p>
+                <div class="answer" id="answer"></div>
+                <p class="more" id="more-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary-btn" type="button" id="show">Show answer <kbd>Space</kbd></button>
+          <div class="ratings" id="ratings" role="group" aria-label="How well did you know it?" hidden>
+            <button type="button" class="rate rate-1" data-rating="1"><span>Again</span><small></small><kbd>1</kbd></button>
+            <button type="button" class="rate rate-2" data-rating="2"><span>Hard</span><small></small><kbd>2</kbd></button>
+            <button type="button" class="rate rate-3" data-rating="3"><span>Good</span><small></small><kbd>3</kbd></button>
+            <button type="button" class="rate rate-4" data-rating="4"><span>Easy</span><small></small><kbd>4</kbd></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="done" id="done" hidden>
+        <svg class="done-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="m20 33 8 8 16-18"/></svg>
+        <h2 id="done-title">All done for today</h2>
+        <p id="done-sub"></p>
+        <dl class="tiles">
+          <div class="tile"><dt>Studied today</dt><dd id="done-today">0</dd></div>
+          <div class="tile"><dt>Day streak</dt><dd id="done-streak">0</dd></div>
+          <div class="tile"><dt>Due tomorrow</dt><dd id="done-tomorrow">0</dd></div>
+        </dl>
+        <div class="btn-row center">
+          <button class="primary-btn" type="button" id="more"></button>
+          <button class="soft-btn" type="button" data-start="quick">Try 10 practice questions</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Practice -->
+    <section class="view" id="view-practice" aria-labelledby="h-practice" hidden>
+      <div id="practice-home">
+        <h1 id="h-practice">Practice questions</h1>
+        <p class="muted lede">Exam-style multiple-choice questions with a worked explanation for every answer.</p>
+        <div class="modes">
+          <button class="mode" type="button" data-start="quick">
+            <span class="mode-icon" aria-hidden="true">⚡</span>
+            <span class="mode-title">Quick 10</span>
+            <span class="mode-help">Ten questions from all your topics, with instant feedback.</span>
+          </button>
+          <div class="mode mode-drill">
+            <span class="mode-icon" aria-hidden="true">🔬</span>
+            <span class="mode-title">Topic drill</span>
+            <span class="mode-help">Every question in one topic.</span>
+            <div class="mode-row">
+              <select id="drill-topic" aria-label="Topic to drill"></select>
+              <button class="soft-btn" type="button" data-start="drill">Start</button>
+            </div>
+          </div>
+          <button class="mode" type="button" data-start="mock">
+            <span class="mode-icon" aria-hidden="true">⏱️</span>
+            <span class="mode-title">Mock exam</span>
+            <span class="mode-help" id="mock-help">40 questions in 60 minutes, scored at the end, like the real thing.</span>
+          </button>
+          <button class="mode" type="button" data-start="missed" id="mode-missed">
+            <span class="mode-icon" aria-hidden="true">🔁</span>
+            <span class="mode-title">Review mistakes</span>
+            <span class="mode-help" id="missed-help">Questions you got wrong last time.</span>
+          </button>
+        </div>
+        <section class="panel" aria-labelledby="h-history" id="history-panel" hidden>
+          <h2 id="h-history">Recent sessions</h2>
+          <ol class="history" id="history"></ol>
+        </section>
+      </div>
+
+      <div id="practice-run" hidden>
+        <div class="run-head">
+          <button class="ghost-btn" type="button" id="quit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            End
+          </button>
+          <p class="run-count" id="run-count"></p>
+          <p class="timer" id="timer" hidden></p>
+        </div>
+        <progress class="bar" id="run-bar" value="0" max="1" aria-label="Progress through the questions"></progress>
+        <article class="qcard" id="qcard">
+          <span class="topic-tag" id="q-topic"></span>
+          <h2 class="qtext" id="q-text"></h2>
+          <ol class="choices-list" id="choices"></ol>
+          <div class="feedback" id="feedback" hidden>
+            <p class="feedback-verdict" id="feedback-verdict"></p>
+            <p class="feedback-text" id="feedback-text"></p>
+          </div>
+        </article>
+        <div class="run-actions">
+          <button class="primary-btn" type="button" id="next" hidden>Next <kbd>Enter</kbd></button>
+        </div>
+      </div>
+
+      <div id="practice-results" hidden>
+        <div class="results-hero panel">
+          <div class="ring big" id="score-ring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="52"/><circle class="ring-fill" id="score-ring-fill" cx="60" cy="60" r="52"/></svg><span id="score-pct">0%</span></div>
+          <div>
+            <h1 id="score-title">Nice work</h1>
+            <p id="score-sub" class="muted"></p>
+            <div class="btn-row">
+              <button class="primary-btn" type="button" id="again">Another round</button>
+              <button class="soft-btn" type="button" id="results-done">Done</button>
+            </div>
+          </div>
+        </div>
+        <section class="panel" aria-labelledby="h-bytopic">
+          <h2 id="h-bytopic">By topic</h2>
+          <ul class="topic-bars" id="result-topics"></ul>
+        </section>
+        <section class="panel" aria-labelledby="h-review" id="review-panel">
+          <h2 id="h-review">Review</h2>
+          <ol class="review" id="review"></ol>
+        </section>
+      </div>
+    </section>
+
+    <!-- Guide -->
+    <section class="view" id="view-guide" aria-labelledby="h-guide" hidden>
+      <h1 id="h-guide">Study guide</h1>
+      <div class="toolbar">
+        <input type="search" id="guide-search" placeholder="Search formulas, facts and cards…" aria-label="Search the guide" autocomplete="off">
+        <div class="segmented four" id="guide-mode" role="radiogroup" aria-label="Section">
+          <label><input type="radio" name="guide" value="topics" checked><span>Topics</span></label>
+          <label><input type="radio" name="guide" value="formulas"><span>Formulas</span></label>
+          <label><input type="radio" name="guide" value="nuclides"><span>Nuclides</span></label>
+          <label><input type="radio" name="guide" value="cards"><span>All cards</span></label>
+        </div>
+      </div>
+      <div id="guide-body" class="guide-body"></div>
+    </section>
+
+    <!-- Progress -->
+    <section class="view" id="view-progress" aria-labelledby="h-progress" hidden>
+      <h1 id="h-progress">Progress</h1>
+      <dl class="tiles">
+        <div class="tile"><dt>Day streak</dt><dd id="st-streak">0</dd></div>
+        <div class="tile"><dt>Cards learned</dt><dd id="st-learned">0</dd></div>
+        <div class="tile"><dt>Mastered</dt><dd id="st-mature">0</dd></div>
+        <div class="tile"><dt>Questions answered</dt><dd id="st-questions">0</dd></div>
+      </dl>
+
+      <section class="panel" aria-labelledby="h-activity">
+        <h2 id="h-activity">Activity — last 18 weeks</h2>
+        <div class="heatmap-wrap"><ol class="heatmap" id="heatmap"></ol></div>
+        <p class="muted small-print" id="activity-sum"></p>
+      </section>
+
+      <section class="panel" aria-labelledby="h-mastery">
+        <h2 id="h-mastery">Flashcard mastery</h2>
+        <div class="mastery-bar" id="mastery-bar" aria-hidden="true"></div>
+        <ul class="legend" id="mastery-legend"></ul>
+      </section>
+
+      <section class="panel" aria-labelledby="h-topicprog">
+        <h2 id="h-topicprog">By topic</h2>
+        <p class="muted small-print">Cards learned, and your accuracy on each topic’s practice questions.</p>
+        <ul class="topic-bars" id="topic-bars"></ul>
+      </section>
+
+      <section class="panel" aria-labelledby="h-forecast">
+        <h2 id="h-forecast">Reviews due — next 14 days</h2>
+        <ol class="forecast" id="forecast"></ol>
+      </section>
+    </section>
+
+    <footer class="copyright">© 2026 Marc Cohen</footer>
+  </main>
+
+  <p class="toast" id="toast" role="status"></p>
+  <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+  <!-- Card preview (from the guide) -->
+  <dialog id="preview" aria-labelledby="preview-q" closedby="any">
+    <div class="dialog-body preview-body">
+      <span class="topic-tag" id="preview-topic"></span>
+      <h2 id="preview-q"></h2>
+      <div class="answer" id="preview-a"></div>
+      <p class="more" id="preview-more"></p>
+      <p class="preview-status" id="preview-status"></p>
+    </div>
+    <form method="dialog" class="dialog-foot">
+      <button class="primary-btn" autofocus>Close</button>
+    </form>
+  </dialog>
+
+  <!-- Settings -->
+  <dialog id="settings" aria-labelledby="settings-title" closedby="any">
+    <header class="dialog-head">
+      <h2 id="settings-title">Settings</h2>
+    </header>
+    <div class="dialog-body">
+      <fieldset class="field">
+        <legend>You</legend>
+        <div class="row">
+          <label for="name">Your first name <small class="muted">(optional)</small></label>
+          <input type="text" id="name" autocomplete="given-name" maxlength="40">
+        </div>
+        <div class="row">
+          <label for="examDate">Exam date</label>
+          <input type="date" id="examDate">
+        </div>
+        <p class="help">Counts down on the Today page. Leave it empty if you haven’t booked yet.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Topics to study</legend>
+        <div class="checks" id="topic-checks"></div>
+        <p class="help">Leaving a topic out pauses its cards and questions; your progress on them is kept.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Appearance</legend>
+        <div class="segmented" id="scheme">
+          <label><input type="radio" name="scheme" value="light dark"><span id="scheme-system">System</span></label>
+          <label><input type="radio" name="scheme" value="light"><span>Light</span></label>
+          <label><input type="radio" name="scheme" value="dark"><span>Dark</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Spaced repetition</legend>
+        <div class="row">
+          <label for="newPerDay">New cards per day</label>
+          <input type="number" id="newPerDay" min="0" max="100" step="1" inputmode="numeric">
+        </div>
+        <div class="row">
+          <label for="maxReviews">Maximum reviews per day</label>
+          <input type="number" id="maxReviews" min="10" max="500" step="10" inputmode="numeric">
+        </div>
+        <fieldset class="choices" id="order">
+          <legend>New card order</legend>
+          <label class="choice">
+            <input type="radio" name="order" value="mixed" aria-describedby="order-mixed-help">
+            <span class="choice-title">Mixed topics <span class="tag">Default</span></span>
+            <span class="choice-help" id="order-mixed-help">Each day’s new cards come from every topic, basics first, so the whole syllabus grows together.</span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="order" value="topic" aria-describedby="order-topic-help">
+            <span class="choice-title">One topic at a time</span>
+            <span class="choice-help" id="order-topic-help">Finish radiation physics before dosimetry, and so on, in the order of the Guide.</span>
+          </label>
+        </fieldset>
+        <div class="row">
+          <label for="pace">Review pace</label>
+          <select id="pace">
+            <option value="0.8">Intensive (shorter gaps)</option>
+            <option value="1">Standard</option>
+            <option value="1.3">Relaxed (longer gaps)</option>
+          </select>
+        </div>
+        <p class="help">Scales the gap between reviews. Assumes you study once a day. Close to your exam, Intensive keeps everything fresh.</p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Your data</legend>
+        <p class="help">Progress is stored only in this browser.</p>
+        <div class="btn-row">
+          <button type="button" class="soft-btn" id="export">Export backup</button>
+          <button type="button" class="soft-btn" id="import">Import backup</button>
+          <input type="file" id="import-file" accept="application/json,.json" hidden>
+          <button type="button" class="soft-btn danger" command="show-modal" commandfor="reset">Reset progress</button>
+        </div>
+        <button type="button" class="soft-btn" id="install" hidden>Install app</button>
+      </fieldset>
+    </div>
+    <form method="dialog" class="dialog-foot">
+      <button class="primary-btn">Done</button>
+    </form>
+  </dialog>
+
+  <!-- About -->
+  <dialog id="about" aria-labelledby="about-title" closedby="any">
+    <header class="dialog-head">
+      <h2 id="about-title">About this study guide</h2>
+    </header>
+    <div class="dialog-body about">
+      <section>
+        <h3>What it is</h3>
+        <p>A free study guide for medical physics students preparing for their qualifying and board exams, such as the ABR Part 1 and Part 2 and end-of-program comprehensive exams. It covers radiation physics, dosimetry, radiobiology, radiation protection, diagnostic imaging, nuclear medicine, external beam therapy and brachytherapy.</p>
+      </section>
+      <section>
+        <h3>What you can do</h3>
+        <ul>
+          <li><b>Flashcards with spaced repetition.</b> A few new cards a day, 15 by default, mixed with the ones you’re due to review. Rate each card Again, Hard, Good or Easy; cards you know well come back less and less often, just before you’d forget them.</li>
+          <li><b>Practice questions.</b> A quick 10, a drill on one topic, a timed 40-question mock exam, or a round of the questions you missed. Every answer comes with a worked explanation.</li>
+          <li><b>The guide.</b> High-yield notes for each topic, a formula sheet, key constants, and a table of the nuclides you need to know, all searchable.</li>
+          <li><b>Progress.</b> Your streak, a calendar of your study days, mastery by topic, and the reviews coming up.</li>
+          <li>Set your exam date for a countdown. Use it offline, or install it on your phone or computer. There’s no account: your progress stays in this browser, and you can export a backup from Settings.</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Keyboard shortcuts</h3>
+        <ul>
+          <li>Cards: <kbd>Space</kbd> shows the answer, <kbd>1</kbd>–<kbd>4</kbd> rate it, <kbd>Z</kbd> undoes.</li>
+          <li>Questions: <kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd> answer, <kbd>Enter</kbd> goes on.</li>
+        </ul>
+      </section>
+      <section>
+        <h3>A word of caution</h3>
+        <p>The content was written carefully from standard references (Khan, Attix, Bushberg, Hall, the AAPM task group reports, ICRP, NCRP and NRC regulations), but it is a study aid, not an authority. Regulations and recommendations change; check the current documents, and your program’s own materials, for anything you rely on.</p>
+      </section>
+    </div>
+    <form method="dialog" class="dialog-foot">
+      <button class="primary-btn" autofocus>Close</button>
+    </form>
+  </dialog>
+
+  <dialog id="reset" aria-labelledby="reset-title" class="small">
+    <div class="dialog-body">
+      <h2 id="reset-title">Reset your progress?</h2>
+      <p>This erases your flashcard schedule and practice question history on this device. It cannot be undone.</p>
+    </div>
+    <form method="dialog" class="dialog-foot">
+      <button class="soft-btn" value="cancel" autofocus>Cancel</button>
+      <button class="soft-btn danger solid" value="reset">Erase progress</button>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-quit" aria-labelledby="quit-title" class="small">
+    <div class="dialog-body">
+      <h2 id="quit-title">End this session?</h2>
+      <p id="quit-text">Your answers so far will be scored.</p>
+    </div>
+    <form method="dialog" class="dialog-foot">
+      <button class="soft-btn" value="cancel" autofocus>Keep going</button>
+      <button class="soft-btn solid-ink" value="quit">End and score</button>
+    </form>
+  </dialog>
+
+  <noscript><p class="load-error">This study guide needs JavaScript to run.</p></noscript>
+</body>
+</html>
